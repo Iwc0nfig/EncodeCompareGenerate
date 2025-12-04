@@ -1,0 +1,23 @@
+# 1. Base Image
+FROM continuumio/miniconda3
+
+# 2. Set working directory
+WORKDIR /app
+
+# 3. Install system dependencies (Required for OpenCV/Image processing)
+RUN apt-get update && apt-get install -y \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
+    && rm -rf /var/lib/apt/lists/*
+
+# 4. Copy the environment file
+COPY environment.yml .
+
+# 5. FORCE the environment to use Python 3.10.18 and your libraries
+RUN conda env update -n base --file environment.yml
+
+# 6. Copy your code
+COPY . .
+
+# 7. Run the app
+CMD ["python", "main.py"]
